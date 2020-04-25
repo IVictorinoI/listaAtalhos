@@ -1,0 +1,6 @@
+*.exe
+*.dll
+*.log
+*.cache
+**/ListaAtalhos/bin/
+**/ListaAtalhos/obj/
