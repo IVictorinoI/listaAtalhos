@@ -11,7 +11,7 @@ namespace ListaAtalhos
 {
     public class Atalhos
     {
-        public List<Atalho> Lista { get; set; }
+        private List<Atalho> Lista { get; set; }
 
         public Atalhos()
         {
@@ -20,8 +20,26 @@ namespace ListaAtalhos
 
         public void Initialize()
         {
-            this.GetFromPath(@"C:\ProgramData\Microsoft\Windows\Start Menu\Programs");
-            this.GetFromPath(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + @"\AppData\Roaming\Microsoft\Windows\Start Menu\Programs");
+            GetFromPath(@"C:\ProgramData\Microsoft\Windows\Start Menu\Programs");
+            GetFromPath(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + @"\AppData\Roaming\Microsoft\Windows\Start Menu\Programs");
+            GetExtraFolders();
+        }
+
+        private void GetExtraFolders()
+        {
+            if (!File.Exists(@"./mais.txt"))
+                return;
+
+            var lines = File.ReadAllLines(@"./mais.txt").ToList();
+            lines.ForEach(GetFromPath);
+        }
+
+        public void GetFromPath(string path)
+        {
+            if (!Directory.Exists(path))
+                return;
+
+            GetFromDirectory(new DirectoryInfo(path));
         }
 
         public void GetFromDirectory(DirectoryInfo dir)
@@ -47,11 +65,6 @@ namespace ListaAtalhos
             }            
         }
 
-        public void GetFromPath(string path)
-        {
-            GetFromDirectory(new DirectoryInfo(path));
-        }
-
         public IEnumerable<Atalho> Search(string pesquisa)
         {
             pesquisa = pesquisa.ToUpper();
@@ -67,31 +80,31 @@ namespace ListaAtalhos
         public void StartProgramFromPath(string path)
         {
             Process.Start(path);
-            SaveFav(path);
+            //SaveFav(path);
         }
 
         public void SaveFav(string path)
         {
-            using (System.IO.StreamWriter file = new System.IO.StreamWriter(@"Favoritos.txt"))
+            using (var file = new StreamWriter(@"Favoritos.txt"))
             {
                 file.WriteLine(path);
             };
 
-            var nomeArquivo = "Favoritos.xml";
+            var fileName = "Favoritos.xml";
             XElement doc;
-            if (File.Exists(nomeArquivo))
+            if (File.Exists(fileName))
             {
-                doc = XElement.Load(nomeArquivo);
+                doc = XElement.Load(fileName);
             }
             else
             {
                 doc = new XElement("Favoritos");
             }
 
-            XElement favorito = new XElement("Favorito");
-            favorito.Add(new XElement("Caminho", path));
-            doc.Add(favorito);
-            doc.Save(nomeArquivo);
+            XElement favorite = new XElement("Favorito");
+            favorite.Add(new XElement("Caminho", path));
+            doc.Add(favorite);
+            doc.Save(fileName);
         }
     }
 }

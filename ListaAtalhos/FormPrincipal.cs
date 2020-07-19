@@ -13,20 +13,20 @@ using System.Diagnostics;
 
 namespace ListaAtalhos
 {
-    public partial class Form1 : Form
+    public partial class FormPrincipal : Form
     {
-        Atalhos atalhos = new Atalhos();
+        private Atalhos atalhos = new Atalhos();
 
-        private void FiltraLista(string conteudoFiltrar)
+        private void FilterList(string content)
         {
             lbAtalhos.Items.Clear();
-            foreach (var atalho in atalhos.Search(conteudoFiltrar))
+            foreach (var atalho in atalhos.Search(content))
             {
                 lbAtalhos.Items.Add(atalho.Caminho);
             }
         }
 
-        public Form1()
+        public FormPrincipal()
         {
             InitializeComponent();
         }
@@ -41,12 +41,12 @@ namespace ListaAtalhos
             atalhos.Initialize();
             textPesquisa.Focus();
             CreateShortcut();
-            FiltraLista("");
+            FilterList("");
         }
 
         private void textPesquisa_TextChanged(object sender, EventArgs e)
         {
-            FiltraLista(textPesquisa.Text);
+            FilterList(textPesquisa.Text);
             lbAtalhos.Focus();
             if (lbAtalhos.Items.Count > 0)
                 lbAtalhos.SetSelected(0, true);
@@ -61,6 +61,10 @@ namespace ListaAtalhos
             else if ((e.KeyCode >= Keys.D0 && e.KeyCode <= Keys.D9))
             {
                 textPesquisa.Text = textPesquisa.Text + e.KeyData.ToString().Replace("D", "").ToLower();
+            }
+            else if ((e.KeyCode >= Keys.NumPad0 && e.KeyCode <= Keys.NumPad9))
+            {
+                textPesquisa.Text = textPesquisa.Text + e.KeyData.ToString().ToUpper().Replace("NUMPAD", "").ToLower();
             }
             else if ((e.KeyCode == Keys.Space))
             {

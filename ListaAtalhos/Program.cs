@@ -18,15 +18,16 @@ namespace ListaAtalhos
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             string processo = Process.GetCurrentProcess().ProcessName;
+
             if (Process.GetProcessesByName(processo).Length > 1)
             {
                 MessageBox.Show("Victor");
-                Form form1 = Application.OpenForms["Form1"];
-                MessageBox.Show(form1.Text);
-                form1.Show();
+                Form FormPrincipal = Application.OpenForms["FormPrincipal"];
+                MessageBox.Show(FormPrincipal.Text);
+                FormPrincipal.Show();
             } else
             {
-                Form1 frm = new Form1();
+                FormPrincipal frm = new FormPrincipal();
                 Application.Run(frm);
             }
 
